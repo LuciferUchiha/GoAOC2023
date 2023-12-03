@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"regexp"
 )
 
 func ReadLines(filename string) []string {
@@ -24,4 +25,9 @@ func ReadLines(filename string) []string {
 		log.Fatal(err)
 	}
 	return linesSlice
+}
+
+func IsNumber(symbol rune) bool {
+	re := regexp.MustCompile("[0-9]")
+	return re.MatchString(string(symbol))
 }

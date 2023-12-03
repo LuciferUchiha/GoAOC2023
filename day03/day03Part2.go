@@ -3,7 +3,6 @@ package main
 import (
 	"GoAOC2023/util"
 	"fmt"
-	"regexp"
 	"strconv"
 )
 
@@ -29,45 +28,55 @@ func main() {
 
 	for y, line := range grid {
 		for x, character := range line {
-			if isSymbol(character) {
-				// look at the 8 surrounding characters are they a number or part of a number?
-				// if so, add the full number to the sum and replace the number with dots
+			if isGear(character) {
+				surroundingNumbers := make([]int, 0)
+				// copy it so that we can modify it without affecting the original for the bottom row case
+				activeGrid := make([][]rune, len(grid))
+				for i, line := range grid {
+					activeGrid[i] = make([]rune, len(line))
+					copy(activeGrid[i], line)
+				}
 				for _, lookupCoordinates := range surroundingLookup {
 					lookupX := x + lookupCoordinates[0]
 					lookupY := y + lookupCoordinates[1]
 					// out of bounds
-					if lookupX < 0 || lookupX >= len(line) || lookupY < 0 || lookupY >= len(grid) {
+					if lookupX < 0 || lookupX >= len(line) || lookupY < 0 || lookupY >= len(activeGrid) {
 						continue
 					}
-					lookupCharacter := grid[lookupY][lookupX]
+					lookupCharacter := activeGrid[lookupY][lookupX]
 					if util.IsNumber(lookupCharacter) {
 						// go to the left until no longer a number
 						startOfNumberX := lookupX
-						for startOfNumberX > 0 && util.IsNumber(grid[lookupY][startOfNumberX-1]) {
+						for startOfNumberX > 0 && util.IsNumber(activeGrid[lookupY][startOfNumberX-1]) {
 							startOfNumberX--
 						}
 						// go to the right until no longer a number
 						endOfNumberX := lookupX
-						for endOfNumberX < len(line)-1 && util.IsNumber(grid[lookupY][endOfNumberX+1]) {
+						for endOfNumberX < len(line)-1 && util.IsNumber(activeGrid[lookupY][endOfNumberX+1]) {
 							endOfNumberX++
 						}
 
 						// extract the number
 						number := ""
 						for i := startOfNumberX; i <= endOfNumberX; i++ {
-							number += string(grid[lookupY][i])
+							number += string(activeGrid[lookupY][i])
 						}
 						convertedNumber, err := strconv.Atoi(number)
 						if err != nil {
 							panic(err)
 						}
-						sum += convertedNumber
 
 						// replace the number with dots
 						for i := startOfNumberX; i <= endOfNumberX; i++ {
-							grid[lookupY][i] = '.'
+							activeGrid[lookupY][i] = '.'
 						}
+
+						fmt.Println("surrounding number:", convertedNumber)
+						surroundingNumbers = append(surroundingNumbers, convertedNumber)
 					}
+				}
+				if len(surroundingNumbers) == 2 {
+					sum += surroundingNumbers[0] * surroundingNumbers[1]
 				}
 			}
 		}
@@ -75,8 +84,7 @@ func main() {
 	fmt.Println(sum)
 }
 
-func isSymbol(symbol rune) bool {
+func isGear(symbol rune) bool {
 	// matches all special characters except for .
-	re := regexp.MustCompile("[^a-zA-Z0-9\\s.]")
-	return re.MatchString(string(symbol))
+	return symbol == '*'
 }
