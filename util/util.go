@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
 func ReadLines(filename string) []string {
@@ -30,4 +32,67 @@ func ReadLines(filename string) []string {
 func IsNumber(symbol rune) bool {
 	re := regexp.MustCompile("[0-9]")
 	return re.MatchString(string(symbol))
+}
+
+func ArrayContains[T comparable](s []T, e T) bool {
+	for _, v := range s {
+		if v == e {
+			return true
+		}
+	}
+	return false
+}
+
+func StringArrayToIntArray(stringArray []string) []int {
+	intArray := make([]int, len(stringArray))
+	for i, stringNumber := range stringArray {
+		number, err := strconv.Atoi(stringNumber)
+		if err != nil {
+			log.Fatal(err)
+		}
+		intArray[i] = number
+	}
+	return intArray
+}
+
+func StringArrayRemoveEmptyStrings(stringArray []string) []string {
+	newStringArray := make([]string, 0)
+	for _, string := range stringArray {
+		if string != "" {
+			newStringArray = append(newStringArray, string)
+		}
+	}
+	return newStringArray
+}
+
+func StringArrayTrimElements(stringArray []string) []string {
+	newStringArray := make([]string, 0)
+	for _, text := range stringArray {
+		newStringArray = append(newStringArray, strings.TrimSpace(text))
+	}
+	return newStringArray
+}
+
+func ExtractNumber(text string) int {
+	re := regexp.MustCompile("[0-9]+")
+	numberString := re.FindString(text)
+	number, err := strconv.Atoi(numberString)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return number
+}
+
+func ExtractNumbers(text string) []int {
+	re := regexp.MustCompile("[0-9]+")
+	numberStrings := re.FindAllString(text, -1)
+	numbers := make([]int, 0)
+	for _, numberString := range numberStrings {
+		number, err := strconv.Atoi(numberString)
+		if err != nil {
+			log.Fatal(err)
+		}
+		numbers = append(numbers, number)
+	}
+	return numbers
 }
