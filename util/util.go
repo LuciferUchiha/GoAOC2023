@@ -96,3 +96,20 @@ func ExtractNumbers(text string) []int {
 	}
 	return numbers
 }
+
+func ConcatNumbersInIntArr(numbers []int) int {
+	numberString := ""
+	for _, number := range numbers {
+		numberString += strconv.Itoa(number)
+	}
+	number, err := strconv.Atoi(numberString)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return number
+}
+
+type Pair[T, U any] struct {
+	First  T
+	Second U
+}
