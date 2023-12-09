@@ -74,7 +74,7 @@ func StringArrayTrimElements(stringArray []string) []string {
 }
 
 func ExtractNumber(text string) int {
-	re := regexp.MustCompile("[0-9]+")
+	re := regexp.MustCompile("-*\\w+")
 	numberString := re.FindString(text)
 	number, err := strconv.Atoi(numberString)
 	if err != nil {
@@ -84,7 +84,7 @@ func ExtractNumber(text string) int {
 }
 
 func ExtractNumbers(text string) []int {
-	re := regexp.MustCompile("[0-9]+")
+	re := regexp.MustCompile("-*\\w+")
 	numberStrings := re.FindAllString(text, -1)
 	numbers := make([]int, 0)
 	for _, numberString := range numberStrings {

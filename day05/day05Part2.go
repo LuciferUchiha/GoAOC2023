@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"time"
 )
 
 func main() {
 	lines := util.ReadLines("day05/day05.in")
+	start := time.Now()
 
 	// extract the seeds
 	currentLine := 0
@@ -54,6 +56,8 @@ func main() {
 		}
 	}
 	fmt.Println("The minimum location is: ", minLocation)
+	end := time.Now()
+	fmt.Println("Execution time: ", end.Sub(start))
 }
 
 func generateMap(lines []string, currentLine int) [][]int {
