@@ -2,7 +2,9 @@ package util
 
 import (
 	"bufio"
+	"fmt"
 	"log"
+	"math"
 	"os"
 	"regexp"
 	"strconv"
@@ -109,7 +111,50 @@ func ConcatNumbersInIntArr(numbers []int) int {
 	return number
 }
 
-type Pair[T, U any] struct {
-	First  T
-	Second U
+func ManhattanDistance(point1, point2 Point) float64 {
+	return math.Abs(float64(point1.X-point2.X)) + math.Abs(float64(point1.Y-point2.Y))
+}
+
+func TwoDimRuneSlicesEqual(slice1, slice2 [][]rune) bool {
+	if len(slice1) != len(slice2) {
+		return false
+	}
+	for y, row := range slice1 {
+		if len(row) != len(slice2[y]) {
+			return false
+		}
+		for x, symbol := range row {
+			if symbol != slice2[y][x] {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+type Point struct {
+	X int
+	Y int
+}
+
+func (p Point) Add(other Point) Point {
+	return Point{X: p.X + other.X, Y: p.Y + other.Y}
+}
+
+type Pair struct {
+	A int
+	B int
+}
+
+type GridLine struct {
+	Start Point
+	End   Point
+}
+
+func (p Point) String() string {
+	return fmt.Sprintf("(%d, %d)", p.X, p.Y)
+}
+
+func (line GridLine) String() string {
+	return fmt.Sprintf("%s -> %s", line.Start, line.End)
 }
